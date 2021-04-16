@@ -1,19 +1,34 @@
+/**
+ * @file ATM_DS.c
+ * @author Vinayak Karalatti (you@domain.com)
+ * @brief ATM machine  management system
+ * @version 0.1
+ * @date 2021-04-16
+ * 
+ * @copyright Copyright (c) 2021
+ * 
+ */
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
 #include<time.h>
 
-/*
-  node structure for implementing a queue to store transaction history
-*/
+
+/**
+ * @brief node structure for implementing a queue to store transaction history
+ * 
+ */
 typedef struct node {
     char statement[50];
     struct node* link;
 } node;
 
-/*
-  ATM function prototypes
-*/
+
+
+/**
+ * @brief  ATM function prototypes
+ * 
+ */
 void pinGeneration(void);
 int checkPin(void);
 void showBalance(int *);
@@ -22,7 +37,11 @@ void withdrawMoney(node **, int *);
 void saveHistory(node **, char *);
 void removeHistory(node **);
 void showHistory(node **);
-
+/**
+ * @brief main function 
+ * 
+ * @return int 
+ */
 int main(void) {
     int choice1, choice2;
     int pinValid = 0, balance = 0;
@@ -47,10 +66,11 @@ int main(void) {
                         printf("\nInvalid PIN. Please generate a PIN if you don't have one.\n");
                         exit(EXIT_FAILURE);
                     }
+                    /**
+                     * @brief  On valid PIN entry by user, the ATM Menu is presented to the user
+                     * 
+                     */
 
-                    /*
-					  On valid PIN entry by user, the ATM Menu is presented to the user
-					*/
                     while(pinValid) {
                         printf("\nATM System Menu\n===============\n\n");
                         printf("1. Check Balance\n2. Deposit\n3. Withdraw\n4. View transaction history\n5. Quit\n\n");
@@ -82,18 +102,27 @@ int main(void) {
     }
     return 0;
 }
-
-/*
-  This function will search for the PIN entered by the user
+/**
+ * @brief   This function will search for the PIN entered by the user
   in the file where the PIN numbers are stored
   If PIN is found return 1
   Otherwise, return 0
-*/
+ * 
+ */
+
 int checkPin(void) {
     FILE *fp;
-    // buffer to read PIN and store from file
+    /**
+     * @brief buffer to read PIN and store from file
+     * 
+     */
+   
     char pin[8];
-    // buffer to read PIN and store from user
+    /**
+     * @brief buffer to read PIN and store from user
+     * 
+     */
+    
     char keyPin[8];
     int pinValid = 0;
 
@@ -105,10 +134,12 @@ int checkPin(void) {
         printf("\nFile cannot be opened\n");
         exit(EXIT_FAILURE);
     }
+    /**
+     * @brief  Search for the PIN entered by user in file pin.txt
+     * 
+     */
 
-    /*
-      Search for the PIN entered by user in file pin.txt
-    */
+   
     while (fgets(pin, sizeof(pin), fp) != NULL) {
         if (strstr(pin, keyPin)) {
             pinValid = 1;
@@ -118,17 +149,19 @@ int checkPin(void) {
 
     return pinValid;
 }
+    /**
+     * @brief   This function will generate a 4-digit random number that
+                is considered as PIN
+     * 
+     */
 
-/*
-  This function will generate a 4-digit random number that
-  is considered as PIN
-*/
 void pinGeneration(void) {
     FILE *fp;
+    /**
+     * @brief  Generate a random 4 digit number
+     * 
+     */
 
-    /*
-	  Generate a random 4 digit number
-	*/
     srand(time(NULL));
     int generatedPin = 1000+rand()%9000;
 
@@ -142,28 +175,33 @@ void pinGeneration(void) {
         exit(EXIT_FAILURE);
     }
 
-    /*
-      Write PIN to the file
-    */
+    /**
+     * @brief Write PIN to the file
+     * 
+     */
+    
     fprintf(fp, "%d\n", generatedPin);
     fclose(fp);
 }
+/**
+ * @brief  This function will display the current balance amount
+ */
 
-/*
-  This function will display the current balance amount
-*/
 void showBalance(int *balance) {
     printf("\nYour current balance is Rs.%d\n", *balance);
 }
+/**
+ * @brief  This function will add the money deposited to the balance
+ * 
+ */
 
-/*
-  This function will add the money deposited to the balance
-*/
 void depositMoney(node **head, int *balance) {
     int depositAmount;
-    /*
-      buffer to store
+   /**
+    * @brief buffer to store
+    * 
     */
+
     char depositStmt[50];
 
     printf("\nEnter amount to deposit: ");
@@ -182,10 +220,11 @@ void depositMoney(node **head, int *balance) {
         printf("\nInvalid amount entered\n.");
     }
 }
+/**
+ * @brief   This function will deduct the money withdrawn from the balance
+ * 
+ */
 
-/*
-  This function will deduct the money withdrawn from the balance
-*/
 void withdrawMoney(node **head, int *balance) {
     int withdrawAmount;
     char withdrawStmt[50];
@@ -210,10 +249,11 @@ void withdrawMoney(node **head, int *balance) {
         printf("\nInvalid amount entered\n.");
     }
 }
+/**
+ * @brief   This function will save a transaction statement 
+ * 
+ */
 
-/*
-  This function will save a transaction statement
-*/
 void saveHistory(node **head, char *str) {
     static int count = 0;
     node *temp;
@@ -239,11 +279,12 @@ void saveHistory(node **head, char *str) {
         count++;
     }
 }
+/**
+ * @brief   This function is used to remove the oldest transaction when
+            10 transactions are made
+ * 
+ */
 
-/*
-  This function is used to remove the oldest transaction when
-  10 transactions are made
-*/
 void removeHistory(node **head) {
     node *temp;
     temp = *head;
@@ -251,10 +292,11 @@ void removeHistory(node **head) {
     temp->link = NULL;
     free(temp);
 }
+/**
+ * @brief  This function will display the transaction history
+ * 
+ */
 
-/*
-  This function will display the transaction history
-*/
 void showHistory(node **head) {
     node *temp;
     temp = *head;
@@ -269,4 +311,3 @@ void showHistory(node **head) {
         }
     }
 }
-
